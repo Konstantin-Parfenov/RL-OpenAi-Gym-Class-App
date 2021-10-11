@@ -1,5 +1,4 @@
 import math
-from math import sqrt
 import gym
 from gym import spaces
 from gym.utils import seeding
@@ -64,7 +63,7 @@ class MoveToBeacon1D(gym.Env):
         position += movement
         #print(f'End of Movement step. Current position is {position}')
         self.state = np.array([position], dtype=np.float32)
-        reward = sqrt(1-self.state[0])
+        reward = math.sqrt(1-self.state[0])
         return self.state, reward
     
     def seed(self, seed=None):
