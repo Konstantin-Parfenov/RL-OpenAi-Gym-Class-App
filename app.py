@@ -1,8 +1,7 @@
-import requests
+import os
 from flask import Flask
 from env import MoveToBeacon1D
 from flask_restful import reqparse, abort, Api, Resource
-import numpy as np
 
 app = Flask(__name__)
 api = Api(app)
@@ -36,9 +35,9 @@ class PredictSentiment(Resource):
 api.add_resource(PredictSentiment, '/')
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)
     
-#if __name__ == "__main__":
-#    port = int(os.environ.get("PORT", 5000))
-#    app.run(debug=True,host='0.0.0.0',port=port)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='127.0.0.1',port=port)

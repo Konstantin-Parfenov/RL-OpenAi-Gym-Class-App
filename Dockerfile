@@ -1,12 +1,16 @@
-# Example of Dockerfile
-LABEL maintainer="Konstantin Parfenov"
-FROM python:3.8.5-alpine3.12
+# start from base
 
-EXPOSE 5000
-ENV FLASK_APP=app.py
+FROM python:3.7.2-alpine3.8
+LABEL maintainer="omg@gmail.com"
+ENV ADMIN="omg"
+RUN apk update && apk upgrade && apk add bash
 
-COPY . /app
+# Install native libraries, required for numpy
+RUN apk --no-cache add musl-dev linux-headers g++ curl
+
+RUN pip install --upgrade pip
+COPY /requirements.txt .
 RUN pip install -r requirements.txt
-
-ENTRYPOINT [ "flask"]
-CMD [ "run", "--host", "0.0.0.0" ]
+COPY . ./app
+EXPOSE 5000
+CMD ["python", "./app/app.py"]

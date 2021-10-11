@@ -1,4 +1,4 @@
-from environment import
+from env import MoveToBeacon1D
 
 def main():
     print ('New game:')

@@ -54,7 +54,7 @@ class MoveToBeacon1D(gym.Env):
         self.seed()
         
     def step(self, action):
-        print('DEBUG action value',action)
+        #print('DEBUG action value',action)
         position = self.state[0]  
         #print(f'Start Movement step. Current position is {position}')
         #print(f'Start Movement step. Current self.state is {self.state}')
@@ -90,7 +90,7 @@ class MoveToBeacon1D(gym.Env):
     def reset(self):
         self.state = np.array([self.np_random.uniform(low=-1, high=1)])
         self.reward = None
-        print('Reset Done')
+        #print('Reset Done')
         return np.array(self.state[0], dtype=np.float32)
 
 

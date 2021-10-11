@@ -1,3 +1,4 @@
-flask
-flask_restful
-gym
+Flask==2.0.2
+Flask-RESTful==0.3.9
+numpy==1.19.4
+gym==0.21.0
