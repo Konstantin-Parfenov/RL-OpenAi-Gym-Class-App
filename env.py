@@ -81,7 +81,7 @@ class MoveToBeacon1D(gym.Env):
         #print(f'calc for self reward_1,{position}')
         #print(f'calc for self reward {math.fabs(position)}')
         #print(f'End of Movement step. Current reward is {self.reward}')
-        return self.state, self.reward
+        return self.state.item(), self.reward
     
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -90,27 +90,28 @@ class MoveToBeacon1D(gym.Env):
     def reset(self):
         self.state = np.array([self.np_random.uniform(low=-1, high=1)])
         self.reward = None
+        print('Reset Done')
         return np.array(self.state[0], dtype=np.float32)
 
 
 #Simple Test
-
-game_instance = MoveToBeacon1D()
-game_instance.seed(seed=42)
-game_instance.reset()
-print(f'Initial position:{game_instance.state}')
-action_sequence = [0,0,0,0,1,1,1,0,1,1]
-step = 1
-state = None
-reward = None
-expected_state_list=[-0.5017132,-0.7517132,-1,-1,-0.5,-0.25,-0.5,-0.25,0]
-expected_reward_list=[0.49828678369522095,0.24828678369522095,0,0,0.25,0.5,0.75,0.5,0.75,1]
-test_state_list=[]
-test_reward_list=[]
-for element in action_sequence:
-    print(f'Step: {step}')
-    state, reward = game_instance.step(element)
-    print (f'Game step = {step}, action = {element}, State = {state}, Reward = {reward}')
-    step +=1
-    test_state_list.append(state)
-    test_reward_list.append(reward)
+if False:
+    game_instance = MoveToBeacon1D()
+    game_instance.seed(seed=42)
+    game_instance.reset()
+    print(f'Initial position:{game_instance.state}')
+    action_sequence = [0,0,0,0,1,1,1,0,1,1]
+    step = 1
+    state = None
+    reward = None
+    expected_state_list=[-0.5017132,-0.7517132,-1,-1,-0.5,-0.25,-0.5,-0.25,0]
+    expected_reward_list=[0.49828678369522095,0.24828678369522095,0,0,0.25,0.5,0.75,0.5,0.75,1]
+    test_state_list=[]
+    test_reward_list=[]
+    for element in action_sequence:
+        print(f'Step: {step}')
+        state, reward = game_instance.step(element)
+        print (f'Game step = {step}, action = {element}, State = {state}, Reward = {reward}')
+        step +=1
+        test_state_list.append(state)
+        test_reward_list.append(reward)

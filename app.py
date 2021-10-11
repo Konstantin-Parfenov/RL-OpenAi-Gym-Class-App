@@ -1,8 +1,7 @@
+import requests
 from flask import Flask
-import os
 from env import MoveToBeacon1D
 from flask_restful import reqparse, abort, Api, Resource
-
 import numpy as np
 
 app = Flask(__name__)
@@ -14,23 +13,24 @@ simulation.reset()
 
 # argument parsing
 parser = reqparse.RequestParser()
-parser.add_argument('query')
+parser.add_argument('input',type=int)
 
 class PredictSentiment(Resource):
     def get(self):
         # use parser and find the user's query
         args = parser.parse_args()
-        user_query = args['query']
-
-        # vectorize the user's query and make a prediction
-        input = np.array([user_query])
-        output_1, output_2 = simulation.step(input)
-        
+        user_query = args['input']
+        # Get output from model
+        print(type(user_query))
+        if type(user_query)==int:
+            output_1, output_2 = simulation.step(user_query)
+        else:
+            output_1 = 'Error'
+            output_2 = 'Error'
         # create JSON object
-        output = {'Location of agent on the x axis': output_1, 'Current reward experienced by the agent': output_2}
-        
+        output = {'Output_1': output_1, 'Output_2': output_2}
         return output
-
+        
 # Setup the Api resource routing here
 # Route the URL to the resource
 api.add_resource(PredictSentiment, '/')
