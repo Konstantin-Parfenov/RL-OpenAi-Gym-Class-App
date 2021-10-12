@@ -14,9 +14,8 @@ class MoveToBeacon1D(gym.Env):
     reward (float) current reward experienced by the agent
     
     Description:
-    The agent (a car) is started at the random position on the observable space. For any given
+    The agent is started at the random position on the observable space. For any given
     state the agent may choose to move to the left or right.
-    
     
     Actions:
     Type: Discrete(2)
@@ -32,12 +31,22 @@ class MoveToBeacon1D(gym.Env):
     
     Reward:
     Reward of 1 is awarded if the agent reached the beacon (position = 0).
-    Reward is decrease based on the distance from the beacon.
+    Reward is decrease based on the distance from the beacon. Minimum reward equals 0 
         
     Starting State:
     The position of the agent is assigned a uniform random value in
     [-1 , 1].  
-      
+    
+    ATTRIBUTES:
+    
+    min_position: Minimum value for the observation space
+    max_position: Maximum value for the observation space
+    step_size: Predetermined amount of movement along the x-axis
+    action_space:
+    observation_space: Continious, one dimenional observation space or x-axis between the min_position and the max_position
+    SIC!!! reward_range:
+    reward: Variable to hold a calculated during step value of reward
+    movement: Variable to hold a calculated during step value of movement with respect to the direction of movement and movement size 
     '''
     
     def __init__(self):
@@ -48,51 +57,50 @@ class MoveToBeacon1D(gym.Env):
         self.observation_space = spaces.Box(
             low=self.min_position, high=self.max_position, shape=(1,), dtype=np.float32
         )
-        self.reward_range = (0,1)
+        self.reward_min_value = 0
+        self.reward_max_value = 1
         self.reward = None
         self.movement = None
         self.seed()
         
     def step(self, action):
-        #print('DEBUG action value',action)
-        position = self.state[0]  
-        #print(f'Start Movement step. Current position is {position}')
-        #print(f'Start Movement step. Current self.state is {self.state}')
-        #print(f'Start Movement step. Current reward is {self.reward}')
+        '''
+        Calculates a step defined by the action input and returns two values.
+        The first value is a position on the x-axis after the step.
+        The second value is the reward value after the step.
         
-        #1
-        movement = np.multiply((action-0.5)*2,self.step_size)
-        #print(f'Calculated movement is {movement}')
-        #print(f'Performing movement')
+        If the position of the agent is out of observation space borders after the movement, the position is
+        set as maximum or minimum position avaliable in observation space.   
+        '''
+        position = self.state[0]  
+        movement = np.multiply(action,self.step_size)
         position += movement
         # Return the max and min position if the position is above or below the border
         if position > self.max_position:
-            #print(f'NOTE: Movement exceeds borders. Returned to max position')
             position = self.max_position
         if position < self.min_position:
-            #print(f'NOTE: Movement exceeds borders. Returned to min position')
             position = self.min_position
-        #print(f'End of Movement step. Current position is {position}')
-        #print(f'Update self.state from calculated position')
         self.state = np.array([position], dtype=np.float32)
-        #print(f'End of Movement step. Current self.state is {self.state}')
-        #print(f'Calculate reward')
+        #Calculating reward
         self.reward = (1-math.fabs(self.state[0]))
-        #print(f'calc for self reward_1,{position}')
-        #print(f'calc for self reward {math.fabs(position)}')
-        #print(f'End of Movement step. Current reward is {self.reward}')
+        
         return self.state.item(), self.reward
+
     
     def seed(self, seed=None):
+        '''
+        Define seed for random starting point generation for the test repeatability.
+        '''
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
     
     def reset(self):
-        self.state = np.array([self.np_random.uniform(low=-1, high=1)])
+        '''
+        Randomise a starting point between minimum and maximum values for the observation space.
+        Set reward to None.
+        '''
+        self.state = np.array([self.np_random.uniform(low=self.min_position, high=self.max_position)])
         self.reward = None
-        #print('Reset Done')
-        return np.array(self.state[0], dtype=np.float32)
-
 
 #Simple Test
 if False:
@@ -100,7 +108,7 @@ if False:
     game_instance.seed(seed=42)
     game_instance.reset()
     print(f'Initial position:{game_instance.state}')
-    action_sequence = [0,0,0,0,1,1,1,0,1,1]
+    action_sequence = [-1,-1,-1,-1,1,1,1,-1,1,1]
     step = 1
     state = None
     reward = None

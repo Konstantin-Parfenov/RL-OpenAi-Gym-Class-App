@@ -1,0 +1,3 @@
+# this is .dockerignore file
+/.git
+/__pycache__
