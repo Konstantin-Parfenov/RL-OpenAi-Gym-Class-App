@@ -13,7 +13,7 @@ RUN pip install --upgrade pip
 COPY /requirements.txt .
 RUN pip install -r requirements.txt
 # Copy application files
-COPY /app.py ./app
+COPY . ./app
 # Open port 5000 in container is run with -P argument
 EXPOSE 5000
 # Start application

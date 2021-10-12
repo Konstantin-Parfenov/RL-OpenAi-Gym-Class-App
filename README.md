@@ -7,12 +7,12 @@ ___
   * app.py: Flask REST API application
   * env.py: MoveToBeacon1D class  
   * Dockerfile: Base image is alpine3.8 with python3.7
-  * requirements.txt: list of packages that the app will import
+  * .dockerignore: Descriptions for docker to ignore files and folders
+  * requirements.txt: List of packages that the app will import
   * test_env.py: Unit_test for env class
 
 ## Testing the API locally
 1. Run the Flask API locally for testing. Go to directory with `app.py`.
-
 
 ```bash
 python app.py
@@ -47,8 +47,13 @@ docker build -t flask:flask_v3 .
 docker run -P flask:flask_v3
 ```
 
-1. Run the Flask API locally for testing. Go to directory with `app.py`.
+3. Start Docker CLI for the container and use curl installed on the image to test
 
 ```bash
-python app.py
+/ # curl 127.0.0.1:5000/?input=-1
+```
+4. Example of successful output.
+
+```bash
+{"Location of agent on the x axis": 0.75, "Current reward experienced by the agent": 0.25}
 ```
