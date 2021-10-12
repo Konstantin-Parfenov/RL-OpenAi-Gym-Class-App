@@ -16,6 +16,9 @@ class PerformStep(Resource):
         user_query = args['input']
         # Get output from model
         if user_query == -1 or user_query == 1 :
+            #Convert input to action_space 
+            if user_query == -1:
+                user_query = 0
             # Get output values from MoveToBeacon1D instance step.
             output_1, output_2 = simulation.step(user_query)
             # create JSON object

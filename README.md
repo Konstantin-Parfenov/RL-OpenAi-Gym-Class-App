@@ -3,13 +3,22 @@
 ___
 
 ## File Structure
-* app_name
+* RL-OpenAi-Gym-Class-App
   * app.py: Flask REST API application
   * env.py: MoveToBeacon1D class  
   * Dockerfile: Base image is alpine3.8 with python3.7
   * .dockerignore: Descriptions for docker to ignore files and folders
   * requirements.txt: List of packages that the app will import
-  * test_env.py: Unit_test for env class
+  * test_env.py: Test case for env class
+
+## Flask App Routs controlling agent and simulation environment 
+Move left: `127.0.0.1:5000/?input=-1`
+Move right: `127.0.0.1:5000/?input=1`
+Restart simulation enviorenment: `127.0.0.1:5000/restart`
+
+## Testing the Core Class locally
+1. Run the `test_env.py` locally. 
+Demo sequence of ten inputs with expected outcomes to STDOUT.
 
 ## Testing the API locally
 1. Run the Flask API locally for testing. Go to directory with `app.py`.

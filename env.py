@@ -44,7 +44,8 @@ class MoveToBeacon1D(gym.Env):
     step_size: Predetermined amount of movement along the x-axis
     action_space:
     observation_space: Continious, one dimenional observation space or x-axis between the min_position and the max_position
-    SIC!!! reward_range:
+    reward_min_value: Minimum value for the reward
+    reward_max_value: Maximum value for the reward
     reward: Variable to hold a calculated during step value of reward
     movement: Variable to hold a calculated during step value of movement with respect to the direction of movement and movement size 
     '''
@@ -72,20 +73,29 @@ class MoveToBeacon1D(gym.Env):
         If the position of the agent is out of observation space borders after the movement, the position is
         set as maximum or minimum position avaliable in observation space.   
         '''
-        position = self.state[0]  
-        movement = np.multiply(action,self.step_size)
+        err_msg = "%r (%s) invalid" % (action, type(action))
+        assert self.action_space.contains(action), err_msg
+        position = self.state[0]
+        # If the multiplication is invalid return zero movement  
+        try:  
+            movement = np.multiply((action-0.5)*2,self.step_size)
+        except BaseException:
+            movement = 0
+            print('Multiplication Error. Movement is set to 0')
+        #Change the position for the movement value
         position += movement
         # Return the max and min position if the position is above or below the border
         if position > self.max_position:
             position = self.max_position
         if position < self.min_position:
             position = self.min_position
+        # Update state with the position
         self.state = np.array([position], dtype=np.float32)
-        #Calculating reward
+        #Calculating reward according to the task description
         self.reward = (1-math.fabs(self.state[0]))
-        
+        if self.reward > self.reward_max_value or self.reward < self.reward_min_value:
+            raise Exception('Reward value is not in range')
         return self.state.item(), self.reward
-
     
     def seed(self, seed=None):
         '''
@@ -102,24 +112,3 @@ class MoveToBeacon1D(gym.Env):
         self.state = np.array([self.np_random.uniform(low=self.min_position, high=self.max_position)])
         self.reward = None
 
-#Simple Test
-if False:
-    game_instance = MoveToBeacon1D()
-    game_instance.seed(seed=42)
-    game_instance.reset()
-    print(f'Initial position:{game_instance.state}')
-    action_sequence = [-1,-1,-1,-1,1,1,1,-1,1,1]
-    step = 1
-    state = None
-    reward = None
-    expected_state_list=[-0.5017132,-0.7517132,-1,-1,-0.5,-0.25,-0.5,-0.25,0]
-    expected_reward_list=[0.49828678369522095,0.24828678369522095,0,0,0.25,0.5,0.75,0.5,0.75,1]
-    test_state_list=[]
-    test_reward_list=[]
-    for element in action_sequence:
-        print(f'Step: {step}')
-        state, reward = game_instance.step(element)
-        print (f'Game step = {step}, action = {element}, State = {state}, Reward = {reward}')
-        step +=1
-        test_state_list.append(state)
-        test_reward_list.append(reward)
